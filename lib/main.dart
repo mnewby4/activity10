@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'second.dart';
 
 void main() => runApp(const MyApp());
@@ -40,20 +42,22 @@ class MyCustomFormState extends State<MyCustomForm> {
   //
   // Note: This is a GlobalKey<FormState>,
   // not a GlobalKey<MyCustomFormState>.
-  final _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormBuilderState>();
+  final _emailFieldKey = GlobalKey<FormBuilderState>();
+  final _dateFieldKey = GlobalKey<FormBuilderState>();
 
   @override
   Widget build(BuildContext context) {
     // Build a Form widget using the _formKey created above.
-    return Form(
+    return FormBuilder(
       key: _formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: 10),
-          Text("First"),
           TextFormField(
             // The validator receives the text that the user has entered.
+            decoration: const InputDecoration(labelText: "First Name"),
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter some text';
@@ -63,9 +67,9 @@ class MyCustomFormState extends State<MyCustomForm> {
               return null;
             },
           ),
-          Text("Last"),
           TextFormField(
             // The validator receives the text that the user has entered.
+            decoration: const InputDecoration(labelText: "Last Name"),
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter some text';
@@ -75,34 +79,26 @@ class MyCustomFormState extends State<MyCustomForm> {
               return null;
             },
           ),
-          Text("Email"),
-          TextFormField(
-            // The validator receives the text that the user has entered.
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter some text';
-              } else if (!value.contains("@") || !value.contains(".")) {
-                return 'Please enter a valid email address';
-              }
-              return null;
-            },
+          FormBuilderTextField(
+            key: _emailFieldKey,
+            name: 'email',
+            decoration: const InputDecoration(labelText: 'Email'),
+            validator: FormBuilderValidators.compose([
+              FormBuilderValidators.required(),
+              FormBuilderValidators.email(),
+            ]),
           ),
-          Text("Date of Birth"),
-          TextFormField(
-            // The validator receives the text that the user has entered.
-            validator: (value) {              
-              if (value == null || value.isEmpty) {
-                return 'Please enter some text';
-              } else if (!value.contains(RegExp("^[0-9]")) || !value.contains('/')) {
-                //if DOES NOT contain only letters + /
-                return 'Please enter a valid date';
-              }
-              return null;
-            },
+          FormBuilderDateTimePicker(
+              name: 'birthdate',
+              enabled: true,
+              decoration: InputDecoration(labelText: 'Date of Birth'),
+              inputType: InputType.date,
+              firstDate: DateTime(1900, 1, 1), 
+              lastDate: DateTime.now(),
           ),
-          Text("Password"),
           TextFormField(
             // The validator receives the text that the user has entered.
+            decoration: const InputDecoration(labelText: "Password"),
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter some text';
